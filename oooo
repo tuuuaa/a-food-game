@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chew Chew Club</title>
+<style>
+:root {
+  --paper: #f7f3e8;
+  --ink: #202018;
+  --green: #146b49;
+  --lime: #d8ed78;
+  --orange: #f36c3d;
+  --pink: #f4a5c7;
+  --line: rgba(32,32,24,.18);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+.shell { max-width: 1120px; margin: auto; padding: 26px 30px 34px; }
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2px solid var(--ink); padding-bottom: 17px;
+}
+.brand { font-weight: 950; font-size: 25px; letter-spacing: -1.3px; }
+.brand span { color: var(--green); }
+.header-right { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 800; }
+.coin { background: var(--lime); border: 2px solid var(--ink); padding: 8px 13px; border-radius: 100px; box-shadow: 2px 2px 0 var(--ink); }
+main {
+  display: grid; grid-template-columns: minmax(0,1.05fr) minmax(340px,.95fr);
+  gap: 24px; margin-top: 26px; align-items: stretch;
+}
+.left { display: flex; flex-direction: column; gap: 18px; }
+.eyebrow { font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: var(--green); }
+h1 { font-size: clamp(36px,5vw,58px); line-height: .98; letter-spacing: -2.8px; margin: 9px 0 12px; font-weight: 950; }
+.intro { max-width: 390px; line-height: 1.6; font-size: 14px; color: #5b5a4e; }
+.pet-stage {
+  position: relative; min-height: 300px; border: 2px solid var(--ink);
+  border-radius: 5px 26px 8px 22px; background: var(--green); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.pet-stage:before, .pet-stage:after {
+  content: ""; position: absolute; border: 2px solid var(--ink);
+  background: var(--orange); border-radius: 50%; width: 85px; height: 28px;
+  transform: rotate(-22deg); left: 9%; top: 15%;
+}
+.pet-stage:after {
+  width: 42px; height: 42px; left: auto; right: 11%; top: auto;
+  bottom: 16%; background: var(--pink); transform: rotate(18deg);
+}
+.sun { position: absolute; top: 27px; right: 28%; font-size: 42px; color: var(--lime); font-weight: 900; transform: rotate(12deg); }
+.ground {
+  position: absolute; bottom: -38px; width: 76%; height: 110px;
+  background: var(--lime); border: 3px solid var(--ink);
+  border-radius: 50% 45% 0 0; transform: rotate(-2deg);
+}
+.pet-doodle {
+  position: relative; z-index: 2; font-size: 100px; line-height: 1;
+  filter: grayscale(1) brightness(0) invert(1); transform: rotate(-5deg);
+  text-shadow: 4px 4px 0 var(--ink); cursor: pointer; user-select: none;
+  transition: transform .2s;
+}
+.pet-doodle.happy { animation: petHop .65s ease-in-out 2; }
+@keyframes petHop {
+  0%,100% { transform: translateY(0) rotate(-5deg) scale(1); }
+  35% { transform: translateY(-24px) rotate(8deg) scale(1.08); }
+  65% { transform: translateY(-8px) rotate(-10deg) scale(1.03); }
+}
+.pet-speech {
+  position: absolute; z-index: 4; top: 22px; left: 50%;
+  transform: translateX(-50%) rotate(-2deg); background: var(--paper);
+  border: 2px solid var(--ink); border-radius: 12px; padding: 8px 12px;
+  font-size: 12px; font-weight: 900; max-width: 75%; text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity .18s;
+}
+.pet-speech.show { opacity: 1; }
+.pet-speech:after {
+  content: ""; position: absolute; bottom: -7px; left: 50%;
+  width: 10px; height: 10px; background: var(--paper);
+  border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+  transform: translateX(-50%) rotate(45deg);
+}
+.pet-label {
+  position: absolute; z-index: 3; left: 20px; bottom: 19px;
+  background: var(--paper); border: 2px solid var(--ink);
+  padding: 8px 12px; font-size: 13px; font-weight: 900; transform: rotate(-2deg);
+}
+.pet-label small { display: block; font-size: 10px; color: #6a6a5d; font-weight: 700; margin-top: 3px; }
+.pet-switch {
+  position: absolute; right: 17px; bottom: 18px; z-index: 3;
+  border: 2px solid var(--ink); background: var(--pink);
+  border-radius: 50%; width: 42px; height: 42px; font-size: 19px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.pet-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mini-stat { border-top: 2px solid var(--ink); padding-top: 12px; }
+.mini-stat .label { font-size: 12px; color: #67665b; font-weight: 700; }
+.mini-stat strong { font-size: 27px; letter-spacing: -1px; display: block; margin-top: 3px; }
+.right {
+  background: #fffdf5; border: 2px solid var(--ink);
+  border-radius: 22px 7px 24px 9px; padding: 23px; box-shadow: 5px 5px 0 var(--ink);
+}
+.section-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+h2 { font-size: 23px; letter-spacing: -.8px; margin: 0 0 6px; }
+.sub { font-size: 12px; color: #777365; line-height: 1.5; }
+.upload {
+  margin-top: 19px; border: 2px dashed #8e8c7d; border-radius: 14px;
+  padding: 23px 15px; text-align: center; background: #faf8ef;
+  cursor: pointer; display: block;
+}
+.upload:hover { border-color: var(--green); background: #f2f5e8; }
+.upload .camera { font-size: 24px; color: var(--green); margin-bottom: 8px; }
+.upload strong { font-size: 14px; display: block; }
+.upload p { font-size: 12px; color: #777365; margin: 7px 0 0; }
+#photo { display: none; }
+#preview { display: none; max-width: 100%; max-height: 180px; margin: 14px auto 0; border-radius: 8px; border: 1px solid var(--line); }
+.status { display: none; margin-top: 10px; padding: 10px 12px; background: #f5e8ce; border-radius: 9px; font-size: 12px; line-height: 1.5; }
+.foods { margin-top: 21px; }
+.foods-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.foods-head h3 { font-size: 14px; margin: 0; }
+.muted { font-size: 11px; color: #888475; }
+.food-row {
+  display: grid; grid-template-columns: minmax(0,1fr) 72px 48px 20px;
+  gap: 7px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line);
+}
+.food-name { font-size: 13px; font-weight: 800; }
+.food-name small { display: block; color: #8a8677; font-size: 11px; font-weight: 500; margin-top: 3px; }
+.food-row input { width: 100%; min-width: 0; border: 1.5px solid #d6d1c2; border-radius: 7px; padding: 7px; background: #fffdf7; font-size: 12px; }
+.food-value { text-align: right; font-size: 12px; font-weight: 800; }
+.remove { border: 0; background: transparent; color: #9a9485; padding: 4px; font-size: 18px; }
+.fiber { background: var(--lime); border: 2px solid var(--ink); border-radius: 13px; padding: 14px 15px; margin-top: 17px; }
+.fiber-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fiber-title { font-size: 13px; font-weight: 900; }
+.fiber-number { font-size: 26px; font-weight: 950; letter-spacing: -1px; }
+.track { height: 7px; background: rgba(32,32,24,.13); border-radius: 8px; margin-top: 10px; overflow: hidden; }
+.track span { height: 100%; display: block; width: 0; background: var(--green); border-radius: 8px; transition: width .25s; }
+.fiber-note { font-size: 11px; margin-top: 7px; color: #4e5c3c; }
+.save { display: flex; gap: 10px; margin-top: 14px; }
+.save button { flex: 1; border: 2px solid var(--ink); border-radius: 9px; padding: 12px 8px; font-size: 13px; font-weight: 900; }
+.primary { background: var(--orange); color: #fff; box-shadow: 3px 3px 0 var(--ink); }
+.secondary { background: transparent; }
+.history { margin-top: 20px; }
+.history h3 { font-size: 14px; margin: 0 0 8px; }
+.history-item { border-top: 1px solid var(--line); padding: 10px 0; font-size: 12px; display: flex; justify-content: space-between; gap: 12px; }
+.history-item span { color: #777365; }
+footer { margin-top: 25px; padding-top: 13px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; font-size: 11px; color: #817d6e; }
+.toast {
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+  background: var(--lime); border: 2px solid var(--ink); padding: 12px 18px;
+  border-radius: 10px; box-shadow: 3px 3px 0 var(--ink);
+  font-size: 13px; font-weight: 900; display: none; z-index: 9;
+}
+@media(max-width:760px) {
+  .shell { padding: 17px 15px 25px; }
+  main { grid-template-columns: 1fr; gap: 19px; }
+  .pet-stage { min-height: 260px; }
+  .right { padding: 18px; }
+  h1 { font-size: 43px; }
+  .header-right .date { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand">Chew Chew<span> Club.</span></div>
+    <div class="header-right">
+      <span class="date" id="today"></span>
+      <span class="coin">✳ <span id="coins">0</span> coins</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="left">
+      <div>
+        <div class="eyebrow">A LITTLE CARE, EVERY DAY</div>
+        <h1>Eat well.<br>Grow slowly.</h1>
+        <div class="intro">Log a real meal and raise a little animal of your own. No streaks, no pressure — just small moments of taking care of yourself.</div>
+      </div>
+
+      <div class="pet-stage">
+        <div class="sun">✳</div>
+        <div class="ground"></div>
+        <div class="pet-speech" id="petSpeech">Ooh, what did you eat?</div>
+        <div class="pet-doodle" id="pet">🐈</div>
+        <div class="pet-label">
+          <span id="petName">Mochi</span>
+          <small id="petLevel">LEVEL 01 · LITTLE FRIEND</small>
+        </div>
+        <button class="pet-switch" id="switchPet" title="Switch animal">↻</button>
+      </div>
+
+      <div class="pet-stats">
+        <div class="mini-stat">
+          <div class="label">MEALS LOGGED TODAY</div>
+          <strong><span id="mealCount">0</span> <span style="font-size:13px">MEALS</span></strong>
+        </div>
+        <div class="mini-stat">
+          <div class="label">PLANTS IN YOUR GARDEN</div>
+          <strong><span id="plantCount">0</span> <span style="font-size:13px">PLANTS</span></strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">YOUR FOOD LOG</div>
+          <h2>What did you eat?</h2>
+        </div>
+        <span style="font-size:22px;color:var(--orange)">↘</span>
+      </div>
+      <div class="sub">Upload a photo, check the results, and save your meal.</div>
+
+      <label class="upload" for="photo">
+        <div class="camera">＋</div>
+        <strong>Upload a meal photo</strong>
+        <p>Choose from your gallery or take a photo</p>
+        <input type="file" id="photo" accept="image/*" capture="environment">
+        <img id="preview" alt="Meal photo preview">
+      </label>
+
+      <div class="status" id="status"></div>
+
+      <div class="foods">
+        <div class="foods-head">
+          <h3>Food &amp; portion</h3>
+          <span class="muted">Estimated amounts · editable</span>
+        </div>
+        <div id="foodList">
+          <div class="muted" style="padding:15px 0">Upload a photo to see the food items here.</div>
+        </div>
+      </div>
+
+      <div class="fiber">
+        <div class="fiber-top">
+          <div class="fiber-title">Estimated dietary fiber</div>
+          <div class="fiber-number"><span id="fiber">0.0</span><span style="font-size:13px"> g</span></div>
+        </div>
+        <div class="track"><span id="fiberBar"></span></div>
+        <div class="fiber-note" id="fiberNote">Your daily fiber intake will build into a simple record over time.</div>
+      </div>
+
+      <div class="save">
+        <button class="primary" id="save">Save this meal　+10 coins</button>
+        <button class="secondary" id="clear">Clear</button>
+      </div>
+
+      <div class="history">
+        <h3>Recent meals</h3>
+        <div id="historyList"><div class="muted">Your saved meals will show up here.</div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>CHEW CHEW CLUB · TAKE IT EASY</span>
+    <span>Taking care of yourself can be fun, too.</span>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DB = [
+  {name:"White rice",fiber:.3,emoji:"🍚"},
+  {name:"Broccoli",fiber:3.3,emoji:"🥦"},
+  {name:"Chicken breast",fiber:0,emoji:"🍗"},
+  {name:"Tomato",fiber:1.2,emoji:"🍅"},
+  {name:"Apple",fiber:2.4,emoji:"🍎"},
+  {name:"Oats",fiber:10.6,emoji:"🌾"},
+  {name:"Banana",fiber:2.6,emoji:"🍌"},
+  {name:"Whole-wheat bread",fiber:6,emoji:"🍞"},
+  {name:"Egg",fiber:0,emoji:"🥚"},
+  {name:"Carrot",fiber:2.8,emoji:"🥕"},
+  {name:"Corn",fiber:2.7,emoji:"🌽"},
+  {name:"Beans",fiber:6.5,emoji:"🫘"}
+];
+const pets = [["🐈","Mochi"],["🐸","Pea"],["🐛","Noodle"],["🐟","Bubbles"],["🐶","Potato"]];
+let foods = [], coins = 0, mealLogs = [], petIndex = 0, plants = 0;
+const $ = id => document.getElementById(id);
+
+$("today").textContent = new Date().toLocaleDateString("en-US", {
+  month:"short",day:"numeric",weekday:"short"
+});
+
+function toast(message) {
+  $("toast").textContent = message;
+  $("toast").style.display = "block";
+  setTimeout(() => $("toast").style.display = "none", 1900);
+}
+
+function petReact(message) {
+  const pet = $("pet"), bubble = $("petSpeech");
+  bubble.textContent = message;
+  bubble.classList.add("show");
+  pet.classList.remove("happy");
+  void pet.offsetWidth;
+  pet.classList.add("happy");
+  setTimeout(() => {
+    bubble.classList.remove("show");
+    pet.classList.remove("happy");
+  }, 2600);
+}
+
+function total() {
+  return foods.reduce((sum, food) => sum + food.fiber * food.grams / 100, 0);
+}
+
+function renderFoods() {
+  if (!foods.length) {
+    $("foodList").innerHTML = '<div class="muted" style="padding:15px 0">Upload a photo to see the food items here.</div>';
+  } else {
+    $("foodList").innerHTML = foods.map((food, index) => `
+      <div class="food-row">
+        <div class="food-name">${food.name}<small>${food.fiber} g fiber / 100 g</small></div>
+        <input type="number" min="1" value="${food.grams}" aria-label="${food.name} amount in grams" data-gram="${index}">
+        <div class="food-value">${(food.fiber * food.grams / 100).toFixed(1)} g</div>
+        <button class="remove" data-del="${index}" aria-label="Remove">×</button>
+      </div>
+    `).join("");
+
+    document.querySelectorAll("[data-gram]").forEach(input => {
+      input.onchange = () => {
+        foods[+input.dataset.gram].grams = Math.max(1, +input.value || 1);
+        renderFoods();
+      };
+    });
+
+    document.querySelectorAll("[data-del]").forEach(button => {
+      button.onclick = () => {
+        foods.splice(+button.dataset.del, 1);
+        renderFoods();
+      };
+    });
+  }
+
+  const fiber = total();
+  $("fiber").textContent = fiber.toFixed(1);
+  $("fiberBar").style.width = Math.min(100, fiber / 25 * 100) + "%";
+  $("fiberNote").textContent = fiber > 0
+    ? "This meal adds " + fiber.toFixed(1) + " g to your fiber log."
+    : "Your daily fiber intake will build into a simple record over time.";
+}
+
+function render() {
+  $("coins").textContent = coins;
+  $("mealCount").textContent = mealLogs.length;
+  $("plantCount").textContent = plants;
+  $("petLevel").textContent = "LEVEL " +
+    String(1 + Math.floor(mealLogs.length / 3)).padStart(2, "0") +
+    " · LITTLE FRIEND";
+
+  $("historyList").innerHTML = mealLogs.length
+    ? mealLogs.slice(-4).reverse().map(meal => `
+      <div class="history-item">
+        <div><b>${meal.foods.map(food => food.name).join(", ")}</b><br><span>${meal.time}</span></div>
+        <b>${meal.fiber.toFixed(1)} g fiber</b>
+      </div>
+    `).join("")
+    : '<div class="muted">Your saved meals will show up here.</div>';
+}
+
+function addByName(name, grams) {
+  const food = DB.find(item => item.name === name);
+  if (food) foods.push({...food, grams});
+  renderFoods();
+}
+
+$("photo").addEventListener("change", event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  $("preview").src = URL.createObjectURL(file);
+  $("preview").style.display = "block";
+  foods = [];
+
+  // Demo mode: these are example foods, not AI photo recognition.
+  [["White rice",150],["Broccoli",80],["Chicken breast",100]]
+    .forEach(([name, grams]) => addByName(name, grams));
+
+  $("status").style.display = "block";
+  $("status").textContent =
+    "Photo uploaded. Demo mode is on: the items below are examples, not actual recognition of your photo.";
+
+  petReact("A meal photo! Let’s take a look.");
+  toast("Photo received");
+});
+
+$("save").onclick = () => {
+  if (!foods.length) {
+    toast("Upload a meal photo first");
+    return;
+  }
+
+  const savedFoods = foods.map(food => ({...food}));
+  const fiber = total();
+
+  mealLogs.push({
+    foods: savedFoods,
+    fiber,
+    time: new Date().toLocaleTimeString("en-US", {
+      hour:"2-digit",minute:"2-digit"
+    })
+  });
+
+  coins += 10;
+  if (fiber >= 2) plants++;
+
+  $("status").style.display = "block";
+  $("status").textContent = "Meal saved. You earned 10 coins.";
+
+  foods = [];
+  $("photo").value = "";
+  $("preview").style.display = "none";
+  renderFoods();
+  render();
+
+  petReact(fiber >= 2 ? "Yum! A little plant energy!" : "Yay, meal logged!");
+  toast("+10 coins · Meal saved");
+};
+
+$("clear").onclick = () => {
+  foods = [];
+  $("photo").value = "";
+  $("preview").style.display = "none";
+  $("status").style.display = "none";
+  renderFoods();
+};
+
+$("switchPet").onclick = () => {
+  petIndex = (petIndex + 1) % pets.length;
+  $("pet").textContent = pets[petIndex][0];
+  $("petName").textContent = pets[petIndex][1];
+  toast("A new little friend!");
+};
+
+$("pet").onclick = () => petReact("Let’s grow a little every day.");
+
+renderFoods();
+render();
+</script>
+</body>
+</html>
